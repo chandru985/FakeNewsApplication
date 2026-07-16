@@ -1,0 +1,10 @@
+flask
+gunicorn
+joblib
+scikit-learn
+pandas
+numpy
+requests
+openai
+python-dotenv
+passlib

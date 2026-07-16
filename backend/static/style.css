@@ -1,0 +1,1516 @@
+/* ============================================================
+   Fake News Detector — Advanced 3D Professional Design System
+   ============================================================ */
+
+:root {
+    /* Colors */
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-soft: rgba(99, 102, 241, 0.15);
+    --primary-glow: rgba(99, 102, 241, 0.5);
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --danger-soft: rgba(239, 68, 68, 0.15);
+    --success: #22c55e;
+    --success-hover: #16a34a;
+    --success-soft: rgba(34, 197, 94, 0.15);
+    --success-glow: rgba(34, 197, 94, 0.4);
+    --warning: #f59e0b;
+    --warning-soft: rgba(245, 158, 11, 0.15);
+    --info: #3b82f6;
+    --info-soft: rgba(59, 130, 246, 0.15);
+
+    /* 3D Backgrounds */
+    --bg-base: #0a0e1a;
+    --bg-elevated: #111827;
+    --bg-surface: rgba(17, 24, 39, 0.7);
+    --bg-card: rgba(17, 24, 39, 0.55);
+    --bg-input: rgba(10, 14, 26, 0.7);
+
+    /* Borders */
+    --border-default: rgba(148, 163, 184, 0.12);
+    --border-subtle: rgba(148, 163, 184, 0.06);
+    --border-focus: rgba(99, 102, 241, 0.6);
+
+    /* Text */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverse: #0a0e1a;
+
+    /* 3D Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.35), 0 0 60px rgba(99, 102, 241, 0.15);
+    --shadow-3d: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* ============================================================
+   3D Animated Background
+   ============================================================ */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 20% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+    animation: bgShift 15s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes bgShift {
+    0% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+    100% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+}
+
+/* Floating particles */
+.particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleFloat 8s infinite;
+}
+
+@keyframes particleFloat {
+    0% { opacity: 0; transform: translateY(100vh) scale(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-10vh) scale(1.5); }
+}
+
+/* ============================================================
+   Links & Typography
+   ============================================================ */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+
+p {
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    transform-style: preserve-3d;
+}
+
+/* ============================================================
+   Sidebar — 3D Glass Effect
+   ============================================================ */
+
+.sidebar {
+    width: 260px;
+    background: rgba(17, 24, 39, 0.75);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-right: 1px solid var(--border-default);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 100;
+    transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow);
+    transform: translateZ(0);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-10);
+    padding: var(--space-2) 0;
+}
+
+.sidebar-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: var(--shadow-glow);
+    flex-shrink: 0;
+    position: relative;
+    transform: translateZ(20px);
+    transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.sidebar-logo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0.6;
+}
+
+.sidebar:hover .sidebar-logo {
+    transform: translateZ(30px) rotateY(5deg);
+}
+
+.sidebar-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #e2e8f0, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transform-style: preserve-3d;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--duration-normal) var(--ease-out);
+    text-decoration: none;
+    position: relative;
+    transform: translateZ(0);
+    transform-style: preserve-3d;
+}
+
+.sidebar-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--primary-soft), transparent);
+    opacity: 0;
+    transition: opacity var(--duration-normal);
+    transform: translateZ(-1px);
+}
+
+.sidebar-link:hover::before {
+    opacity: 1;
+}
+
+.sidebar-link:hover {
+    color: var(--text-primary);
+    transform: translateZ(10px) translateX(4px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.sidebar-link.active {
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--primary), 0 4px 12px rgba(99, 102, 241, 0.15);
+    transform: translateZ(5px);
+}
+
+.sidebar-link svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    transition: transform var(--duration-normal) var(--ease-out);
+    transform: translateZ(2px);
+}
+
+.sidebar-link:hover svg {
+    transform: translateZ(8px) scale(1.15);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-default);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: 260px;
+    padding: var(--space-8);
+    max-width: calc(100% - 260px);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+/* ============================================================
+   Components — 3D Cards
+   ============================================================ */
+
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-3d);
+    transition: all var(--duration-normal) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0.6;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
+    pointer-events: none;
+}
+
+.card-3d {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px);
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.card-3d:hover {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(30px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 15px 30px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
+.card-hover:hover {
+    transform: translateY(-6px) translateZ(20px);
+    box-shadow: var(--shadow-xl), 0 0 40px rgba(99, 102, 241, 0.2);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
+/* ============================================================
+   Components — 3D Buttons
+   ============================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    text-decoration: none;
+    line-height: 1.4;
+    white-space: nowrap;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    box-shadow: var(--shadow-md), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+.btn-3d {
+    transform: perspective(500px) translateZ(0);
+    box-shadow: var(--shadow-lg), 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-3d:hover {
+    transform: perspective(500px) translateZ(15px) translateY(-3px);
+    box-shadow: var(--shadow-xl), 0 8px 16px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+}
+
+.btn-3d:active {
+    transform: perspective(500px) translateZ(5px) translateY(0);
+    box-shadow: var(--shadow-md), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5), 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+}
+
+.btn-secondary:hover {
+    background: rgba(148, 163, 184, 0.1);
+    border-color: rgba(148, 163, 184, 0.3);
+    transform: translateY(-2px) translateZ(5px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger), #f87171);
+    color: white;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px) translateZ(10px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #4ade80);
+    color: white;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+}
+
+.btn-success:hover {
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.5);
+    transform: translateY(-2px) translateZ(10px);
+}
+
+.btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.8rem;
+}
+
+.btn-lg {
+    padding: var(--space-4) var(--space-6);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.btn-block {
+    width: 100%;
+    display: flex;
+}
+
+/* ============================================================
+   Components — 3D Form Elements
+   ============================================================ */
+
+.form-group {
+    margin-bottom: var(--space-5);
+    transform-style: preserve-3d;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transform: translateZ(5px);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all var(--duration-normal) var(--ease-out);
+    outline: none;
+    backdrop-filter: blur(12px);
+    transform-style: preserve-3d;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow), 0 0 20px rgba(99, 102, 241, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    background: rgba(10, 14, 26, 0.9);
+    transform: translateZ(5px);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-textarea {
+    min-height: 160px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+/* Input with icon */
+.input-wrapper {
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.input-icon {
+    position: absolute;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%) translateZ(2px);
+    color: var(--text-muted);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.input-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.input-wrapper .form-input {
+    padding-left: 44px;
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary);
+    transform: translateY(-50%) translateZ(8px) scale(1.1);
+}
+
+/* Checkbox */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    transform-style: preserve-3d;
+}
+
+.form-check input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    transition: transform var(--duration-normal) var(--ease-out);
+    transform: translateZ(2px);
+}
+
+.form-check input:hover {
+    transform: translateZ(8px) scale(1.15);
+}
+
+.form-check-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--duration-normal);
+    transform: translateZ(2px);
+}
+
+.form-check:hover .form-check-label {
+    color: var(--text-primary);
+    transform: translateZ(5px);
+}
+
+/* ============================================================
+   Components — 3D Result Display
+   ============================================================ */
+
+.result-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid transparent;
+    background: var(--bg-card);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-default);
+    border-left-width: 4px;
+    animation: slideUp3D var(--duration-slow) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    box-shadow: var(--shadow-3d);
+}
+
+.result-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.result-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent);
+    pointer-events: none;
+}
+
+.result-card.fake {
+    border-left-color: var(--danger);
+    background: var(--danger-soft);
+    box-shadow: 0 25px 50px rgba(239, 68, 68, 0.2), 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.result-card.real {
+    border-left-color: var(--success);
+    background: var(--success-soft);
+    box-shadow: 0 25px 50px rgba(34, 197, 94, 0.2), 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.result-card.info {
+    border-left-color: var(--info);
+    background: var(--info-soft);
+    box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2), 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    transform-style: preserve-3d;
+}
+
+.result-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-lg);
+    transform: translateZ(15px);
+    transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.result-card:hover .result-icon {
+    transform: translateZ(25px) rotateY(10deg);
+}
+
+.result-card.fake .result-icon {
+    background: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.result-card.real .result-icon {
+    background: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+}
+
+.result-card.info .result-icon {
+    background: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.result-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    transform: translateZ(8px);
+    letter-spacing: -0.02em;
+}
+
+.result-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: var(--space-1);
+    font-weight: 500;
+    transform: translateZ(5px);
+}
+
+/* Confidence Bar */
+.confidence-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(148, 163, 184, 0.15);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-top: var(--space-4);
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    transform: translateZ(3px);
+}
+
+.confidence-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--duration-slow) var(--ease-out);
+    position: relative;
+    box-shadow: 0 0 15px currentColor;
+}
+
+.confidence-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.result-card.fake .confidence-fill {
+    background: linear-gradient(90deg, var(--danger), #f87171);
+}
+
+.result-card.real .confidence-fill {
+    background: linear-gradient(90deg, var(--success), #4ade80);
+}
+
+/* ============================================================
+   Components — 3D Flash Messages
+   ============================================================ */
+
+.flash-container {
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 400px;
+    width: calc(100% - var(--space-12));
+}
+
+.flash {
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid;
+    animation: slideInRight3D var(--duration-slow) var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    box-shadow: var(--shadow-3d);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.flash::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.flash.message {
+    background: var(--success-soft);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: #86efac;
+    box-shadow: 0 20px 40px rgba(34, 197, 94, 0.25);
+}
+
+.flash.error {
+    background: var(--danger-soft);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.25);
+}
+
+.flash-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    transform: translateZ(8px);
+}
+
+/* ============================================================
+   Components — 3D Loader
+   ============================================================ */
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(148, 163, 184, 0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: var(--space-6) auto;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.3), inset 0 0 20px rgba(99, 102, 241, 0.1);
+    transform: translateZ(10px);
+}
+
+.loader.hidden {
+    display: none;
+}
+
+/* ============================================================
+   Components — 3D Auth Pages
+   ============================================================ */
+
+.auth-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-6);
+    position: relative;
+    z-index: 1;
+    perspective: 1200px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-3d);
+    animation: fadeIn3D var(--duration-slow) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(2deg) translateZ(20px);
+}
+
+.auth-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.auth-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    pointer-events: none;
+}
+
+.auth-card:hover {
+    transform: perspective(1000px) rotateX(0deg) translateZ(40px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 15px 30px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+    transform-style: preserve-3d;
+}
+
+.auth-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto var(--space-4);
+    box-shadow: var(--shadow-glow);
+    position: relative;
+    overflow: hidden;
+    transform: perspective(500px) rotateY(-8deg) rotateX(5deg) translateZ(20px);
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.auth-logo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), transparent);
+}
+
+.auth-card:hover .auth-logo {
+    transform: perspective(500px) rotateY(0deg) rotateX(0deg) translateZ(40px);
+}
+
+.auth-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: var(--space-2);
+    background: linear-gradient(135deg, #e2e8f0, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.03em;
+    transform: translateZ(10px);
+}
+
+.auth-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transform: translateZ(5px);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    transform-style: preserve-3d;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-default);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    transform: translateZ(5px);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 600;
+    transition: all var(--duration-fast);
+}
+
+.auth-footer a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ============================================================
+   Components — 3D News Page
+   ============================================================ */
+
+.news-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+}
+
+.news-header {
+    margin-bottom: var(--space-8);
+    transform: translateZ(10px);
+}
+
+.news-header h1 {
+    font-size: 2.25rem;
+    margin-bottom: var(--space-2);
+    font-weight: 800;
+    background: linear-gradient(135deg, #e2e8f0, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.news-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 600px;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-6);
+    transform-style: preserve-3d;
+}
+
+.news-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-3d);
+    transition: all var(--duration-normal) var(--ease-out);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(2deg) rotateY(-1deg) translateZ(0);
+}
+
+.news-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0;
+    transition: opacity var(--duration-normal);
+}
+
+.news-card:hover::before {
+    opacity: 1;
+}
+
+.news-card:hover {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(30px) translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.15);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
+.news-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--border-default);
+    transition: transform var(--duration-slow) var(--ease-out);
+    transform: translateZ(0);
+}
+
+.news-card:hover .news-card-image {
+    transform: translateZ(20px) scale(1.05);
+}
+
+.news-card-body {
+    padding: var(--space-5);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transform-style: preserve-3d;
+}
+
+.news-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transform: translateZ(5px);
+}
+
+.news-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+    transform: translateZ(3px);
+}
+
+.news-card-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: auto;
+    transform: translateZ(8px);
+}
+
+.news-card-actions .btn {
+    flex: 1;
+}
+
+/* ============================================================
+   Components — 3D Dark Toggle
+   ============================================================ */
+
+.theme-toggle {
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all var(--duration-normal) var(--ease-out);
+    z-index: 200;
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: var(--shadow-lg);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+
+.theme-toggle:hover {
+    background: rgba(148, 163, 184, 0.15);
+    transform: translateZ(20px) rotate(15deg) scale(1.1);
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+/* ============================================================
+   Components — 3D Mobile Menu Toggle
+   ============================================================ */
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: var(--space-5);
+    left: var(--space-5);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: var(--shadow-lg);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+
+.mobile-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.mobile-menu-toggle:hover {
+    transform: translateZ(15px) scale(1.05);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ============================================================
+   3D Animations
+   ============================================================ */
+
+@keyframes fadeIn3D {
+    from {
+        opacity: 0;
+        transform: perspective(1000px) rotateX(5deg) translateZ(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1000px) rotateX(2deg) translateZ(20px);
+    }
+}
+
+@keyframes slideUp3D {
+    from {
+        opacity: 0;
+        transform: perspective(1000px) translateY(30px) translateZ(-20px) rotateX(3deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1000px) translateY(0) translateZ(0) rotateX(0);
+    }
+}
+
+@keyframes slideInRight3D {
+    from {
+        opacity: 0;
+        transform: perspective(1000px) translateX(60px) translateZ(-30px) rotateY(-5deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1000px) translateX(0) translateZ(0) rotateY(0);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-10px) translateZ(10px); }
+}
+
+.animate-fade-in {
+    animation: fadeIn3D var(--duration-slow) var(--ease-out);
+}
+
+.animate-slide-up {
+    animation: slideUp3D var(--duration-slow) var(--ease-out);
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+
+.w-full { width: 100%; }
+
+/* ============================================================
+   Dark Mode Overrides
+   ============================================================ */
+
+body.dark-mode {
+    --bg-base: #030712;
+    --bg-elevated: #0f172a;
+    --bg-surface: rgba(15, 23, 42, 0.8);
+    --bg-card: rgba(15, 23, 42, 0.65);
+    --bg-input: rgba(3, 7, 18, 0.75);
+    --border-default: rgba(148, 163, 184, 0.1);
+    --border-subtle: rgba(148, 163, 184, 0.06);
+    --text-secondary: #64748b;
+    --text-muted: #475569;
+}
+
+body.dark-mode .sidebar {
+    background: rgba(3, 7, 18, 0.85);
+    border-right-color: var(--border-default);
+    box-shadow: 6px 0 40px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .auth-card {
+    background: rgba(15, 23, 42, 0.65);
+    border-color: var(--border-default);
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: var(--shadow-3d);
+    }
+
+    .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: var(--space-6);
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .main-content {
+        padding: var(--space-4);
+    }
+
+    .auth-card {
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+        transform: none;
+    }
+
+    .auth-card:hover {
+        transform: none;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-card {
+        transform: none;
+    }
+
+    .news-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .news-card-image {
+        height: 160px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.35rem;
+    }
+
+    .flash-container {
+        top: var(--space-4);
+        right: var(--space-4);
+        max-width: calc(100% - var(--space-8));
+    }
+}
+
+@media (min-width: 1400px) {
+    .main-content {
+        max-width: calc(100% - 260px);
+        padding: var(--space-10);
+    }
+
+    .card {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+}
+
+/* ============================================================
+   PWA & Install Prompt
+   ============================================================ */
+
+.install-prompt {
+    position: fixed;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%) translateZ(30px);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-3d);
+    backdrop-filter: blur(24px) saturate(180%);
+    z-index: 500;
+    animation: slideUp3D var(--duration-slow) var(--ease-out);
+}
+
+.install-prompt-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.install-prompt-text strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: var(--space-1);
+}
+
+/* ============================================================
+   Scrollbar Styling
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.15);
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.25);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.15) transparent;
+}
+
+/* ============================================================
+   Selection
+   ============================================================ */
+
+::selection {
+    background: var(--primary-soft);
+    color: var(--text-primary);
+}
+
+*:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}

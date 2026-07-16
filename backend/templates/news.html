@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live News — Fake News Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FakeNews">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon-192.png') }}">
+</head>
+
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">🔍</div>
+            <span class="sidebar-title">FakeNews</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="sidebar-link">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                Dashboard
+            </a>
+            <a href="/news" class="sidebar-link active">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h.008v.008H12V7.5zm0 3.75h.008v.008H12v-.008zm0 3.75h.008v.008H12v-.008zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Live News
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/logout" class="sidebar-link">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <button onclick="toggleDarkMode()" class="theme-toggle" id="themeBtn" aria-label="Toggle theme">🌙</button>
+
+        <div class="news-page">
+            <div class="news-header">
+                <h1>🌐 Live News</h1>
+                <p>Stay informed with the latest headlines from around the world. Click any article to check its authenticity.</p>
+            </div>
+
+            {% if articles %}
+            <div class="news-grid">
+                {% for article in articles %}
+                <article class="news-card">
+                    {% if article.urlToImage %}
+                    <img 
+                        src="{{ article.urlToImage }}" 
+                        alt="{{ article.title | default('News image') }}" 
+                        class="news-card-image"
+                        loading="lazy"
+                        onerror="this.style.display='none'"
+                    >
+                    {% endif %}
+
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">{{ article.title }}</h3>
+                        <p class="news-card-desc">{{ article.description or '' }}</p>
+
+                        <div class="news-card-actions">
+                            <form action="/predict" method="post">
+                                <input type="hidden" name="news" value="{{ article.title }}">
+                                <button type="submit" class="btn btn-primary btn-sm btn-3d">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                                    Check
+                                </button>
+                            </form>
+                            <form action="/predict" method="post">
+                                <input type="hidden" name="news" value="{{ article.title }}">
+                                <input type="hidden" name="use_verification" value="true">
+                                <button type="submit" class="btn btn-success btn-sm btn-3d">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+                                    AI Verify
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: var(--space-8); text-align: center; transform: translateZ(10px);">
+                <a href="/"><button type="button" class="btn btn-secondary btn-3d">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+                    Back to Dashboard
+                </button></a>
+            </div>
+            {% else %}
+            <div class="card card-3d" style="text-align: center; padding: var(--space-12);">
+                <div style="font-size: 3rem; margin-bottom: var(--space-4);">📰</div>
+                <h2 style="margin-bottom: var(--space-2);">No news available</h2>
+                <p style="color: var(--text-secondary); margin-bottom: var(--space-6);">Unable to fetch live news at the moment. Please try again later.</p>
+                <a href="/"><button type="button" class="btn btn-primary btn-3d">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+                    Back to Dashboard
+                </button></a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<script>
+function toggleDarkMode() {
+    const body = document.body;
+    const btn = document.getElementById("themeBtn");
+
+    body.classList.toggle("dark-mode");
+
+    if (body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+        btn.textContent = "☀️";
+    } else {
+        localStorage.setItem("theme", "light");
+        btn.textContent = "🌙";
+    }
+}
+
+window.onload = function() {
+    const btn = document.getElementById("themeBtn");
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+        btn.textContent = "☀️";
+    } else {
+        btn.textContent = "🌙";
+    }
+}
+
+// Mobile menu toggle
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const sidebar = document.getElementById('sidebar');
+
+if (mobileMenuToggle && sidebar) {
+    mobileMenuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 1024) {
+        if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
+    }
+});
+
+// Create floating particles
+const particlesContainer = document.getElementById('particles');
+if (particlesContainer) {
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        particlesContainer.appendChild(particle);
+    }
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+}
+</script>
+
+</body>
+</html>
